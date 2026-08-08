@@ -1,0 +1,38 @@
+/* Work Orders & Shop Floor Execution Custom Enterprise Styles */
+
+.mms-work-orders-container {
+  font-family: inherit;
+}
+
+/* Custom Scrollbars */
+.mms-work-orders-container ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.mms-work-orders-container ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.mms-work-orders-container ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.mms-work-orders-container ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Shop Floor Dark Terminal Scrollbar */
+.bg-slate-900 ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.bg-slate-900 ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+.bg-slate-900 ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}

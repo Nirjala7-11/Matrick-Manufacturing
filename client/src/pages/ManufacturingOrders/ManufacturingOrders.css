@@ -1,0 +1,75 @@
+/* Manufacturing Order (MO) Management Custom Enterprise Styles */
+
+.mms-mos-container {
+  font-family: inherit;
+}
+
+/* MO Status Badges */
+.mms-mo-status-draft {
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.mms-mo-status-confirmed {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.mms-mo-status-in_progress {
+  background-color: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.mms-mo-status-completed {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.mms-mo-status-cancelled {
+  background-color: #fff1f2;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+}
+
+/* Availability Badges */
+.mms-availability-available {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.mms-availability-partially_available {
+  background-color: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.mms-availability-insufficient {
+  background-color: #fff1f2;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+}
+
+/* Custom Scrollbars */
+.mms-mos-container ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.mms-mos-container ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.mms-mos-container ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.mms-mos-container ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

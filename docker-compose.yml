@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # ===================================================
+  # MongoDB Database Instance
+  # ===================================================
+  mongodb:
+    image: mongo:7.0
+    container_name: mms_mongodb
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-mms_db}
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --eval 'db.runCommand({ping: 1})' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mms_network
+
+  # ===================================================
+  # Backend Express & Socket.IO API Engine
+  # ===================================================
+  backend:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: mms_backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}@mongodb:27017/${MONGO_INITDB_DATABASE:-mms_db}?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-production_jwt_secret_matrick_manufacturing_2026}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mms_network
+
+  # ===================================================
+  # Frontend Nginx Static SPA Server
+  # ===================================================
+  frontend:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: mms_frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    environment:
+      VITE_API_URL: /api
+      VITE_SOCKET_URL: /
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - mms_network
+
+  # ===================================================
+  # Production Reverse Proxy Gateway (Nginx)
+  # ===================================================
+  nginx:
+    image: nginx:alpine
+    container_name: mms_proxy
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - mms_network
+
+networks:
+  mms_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
